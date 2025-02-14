@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Analytics Self-Assessment Tool</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- Fallback Font Awesome -->
+<script>
+  if(typeof FontAwesome === 'undefined') {
+    document.write('<link href="https://use.fontawesome.com/releases/v5.15.4/css/all.min.css" rel="stylesheet">');
+  }
+</script>
+  <style>
+       body {
+      font-family: 'Arial', sans-serif;
+      background: #f0f0f0;
+      color: #333;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #2c3e50;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    .question, .result-container {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px auto;
+      max-width: 600px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .question p {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .option {
+      background: #ecf0f1;
+      padding: 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+      position: relative;
+      border: 1px solid #bdc3c7;
+      color: #34495e;
+      z-index: 1;
+    }
+    .option:hover {
+      background: #e0e6e8;
+      transform: scale(1.02);
+      z-index: 2;
+    }
+    .option .explanation {
+      display: none;
+      position: absolute;
+      background: #34495e;
+      color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      box-sizing: border-box;
+    }
+    .option:hover .explanation {
+      display: block;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #ecf0f1;
+      border-radius: 5px;
+      margin: 20px auto;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress {
+      height: 100%;
+      background: linear-gradient(90deg, #3498db, #2980b9);
+      width: 0;
+      transition: width 0.5s ease;
+      position: relative;
+    }
+    .result {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #2980b9;
+      margin-top: 20px;
+      animation: fadeIn 1s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .result-container {
+      text-align: left;
+    }
+    .result-container h2 {
+      color: #2980b9;
+    }
+    .result-container p {
+      margin-bottom: 15px;
+    }
+    .result-container ul {
+      padding-left: 20px;
+    }
+    .course-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .course-table th, .course-table td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    .course-table th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    .course-table ul {
+      list-style-type: none;
+      padding-left: 0;
+      margin: 0;
+    }
+    .course-table li {
+      margin-bottom: 5px;
+    }
+    .course-table tr:nth-child(even) {
+      background-color: #f8f8f8;
+    }
+    .category-icon {
+      font-size: 60px;
+      margin-bottom: 20px;
+    }
+    .skill-meter {
+      width: 100%;
+      height: 20px;
+      background-color: #e0e0e0;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .skill-level {
+      height: 100%;
+      background-color: #2196F3;
+      border-radius: 10px;
+      transition: width 0.5s ease-in-out;
+    }
+    .badge {
+      display: inline-block;
+      padding: 10px;
+      background-color: #FFD700;
+      border-radius: 50%;
+      margin: 10px;
+    }
+.course-table a {
+  color: #2980b9;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.course-table a:hover {
+  color: #3498db;
+  text-decoration: underline;
+}
+.avatar-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+.avatar {
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.avatar img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+
+.avatar:hover {
+  transform: scale(1.1);
+}
+
+.avatar-message {
+  display: none;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.avatar:hover .avatar-message {
+  display: block;
+}
+
+#quiz-container {
+  display: flex;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+
+#avatar-sidebar {
+  position: relative; /* Ensure this is relative for absolute positioning of children */
+  display: relative;
+  align-items: center;
+  width: 100%;
+  gap: 0px;
+  padding: 0px;
+}
+
+#selected-avatar {
+  position: absolute;
+  left: -100px; /* Move avatar to the right */
+  top: 60%;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+#avatar-message {
+  position: absolute;
+  width: 250px;
+  min-height: 150px;
+  left: 100px;
+  top: 180px;
+  margin-top: 0; /* Remove any top margin */
+  background-color: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 20px;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#quiz-content {
+  flex: 1;
+  padding: 20px;
+
+}
+
+#selected-avatar {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+}
+
+.speech-bubble {
+  position: relative;
+  background: #ffffff;
+  border-radius: .4em;
+  padding: 15px;
+  margin-top: 20px;
+}
+
+.speech-bubble:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-right-color: #ffffff;
+  border-left: 0;
+  margin-top: -20px;
+  margin-left: -20px;
+}
+
+#avatar-selection {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    #avatar-selection h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .avatar-container {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    .avatar {
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .avatar img {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .avatar.selected img {
+      border: 5px solid #2980b9;
+    }
+
+    .avatar-message {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    #ready-button {
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none;
+    }
+
+    #quiz-container {
+      display: none;
+      flex-direction: row;
+    }
+
+    #avatar-sidebar {
+      width: 150px;
+      padding: 20px;
+    }
+
+    #quiz-content {
+      flex: 1;
+      padding: 20px;
+    }
+
+#selected-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  position: fixed;
+  left: calc(8% - 70px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+    .speech-bubble {
+      position: relative;
+      background: #ffffff;
+      border-radius: .4em;
+      padding: 15px;
+      margin-top: 20px;
+    }
+
+    .speech-bubble:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 0;
+      height: 0;
+      border: 20px solid transparent;
+      border-right-color: #ffffff;
+      border-left: 0;
+      margin-top: -20px;
+      margin-left: -20px;
+    }
+
+/* Original centered styles for quiz pages */
+.centered-avatar #quiz-content {
+  display: none; /* Hide the quiz content */
+}
+
+.centered-avatar #avatar-sidebar {
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.centered-avatar #selected-avatar {
+  position: absolute;
+  left: calc(50% - 200px);
+  top: calc(50% - 200px);
+  transform: scale(1.2);
+  margin: 0 auto;
+}
+
+.centered-avatar #avatar-message {
+  position: absolute;
+  width: 700px;
+  left: 50%;
+  top: 20%;
+  transform: translateY(-50%);
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Results page specific styles */
+.centered-avatar.results-page #quiz-content {
+  display: block;
+  width: calc(100% - 300px);
+  margin-left: 300px;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.centered-avatar.results-page #avatar-sidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300px;
+  padding: 20px;
+  z-index: 1000;
+  /* Removed background and shadow */
+}
+
+.centered-avatar.results-page #selected-avatar {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 20px 0 20px 0;
+  left: 0px;
+}
+
+.centered-avatar.results-page #avatar-message {
+  position: relative;
+  left: 90px;
+  top: 20px;
+  width: calc(100% - 40px);
+  margin: 10px auto;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: left;
+  box-sizing: border-box;
+}
+/* Badge base styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin: 10px;
+  font-size: 24px;
+  transition: all 0.3s ease;
+  position: relative;
+  cursor: pointer;
+}
+
+/* Expert badges - light gold theme */
+.badge.expert {
+  background: linear-gradient(45deg, #FFE5A3, #FFD17A);
+  color: #B7791F;
+  box-shadow: 0 2px 10px rgba(255, 215, 0, 0.2);
+}
+
+.badge.expert:hover {
+  transform: scale(1.1);
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  color: #fff;
+}
+
+/* Practitioner badges - light blue theme */
+.badge.practitioner {
+  background: linear-gradient(45deg, #90CDF4, #63B3ED);
+  color: #2B6CB0;
+  box-shadow: 0 2px 10px rgba(33, 150, 243, 0.2);
+}
+
+.badge.practitioner:hover {
+  transform: scale(1.1);
+  background: linear-gradient(45deg, #2196F3, #1976D2);
+  color: #fff;
+}
+
+/* Enthusiast badges - light green theme */
+.badge.enthusiast {
+  background: linear-gradient(45deg, #9AE6B4, #68D391);
+  color: #276749;
+  box-shadow: 0 2px 10px rgba(76, 175, 80, 0.2);
+}
+
+.badge.enthusiast:hover {
+  transform: scale(1.1);
+  background: linear-gradient(45deg, #4CAF50, #388E3C);
+  color: #fff;
+}
+
+/* Novice badges - light purple theme */
+.badge.novice {
+  background: linear-gradient(45deg, #E9D8FD, #D6BCFA);
+  color: #553C9A;
+  box-shadow: 0 2px 10px rgba(156, 39, 176, 0.2);
+}
+
+.badge.novice:hover {
+  transform: scale(1.1);
+  background: linear-gradient(45deg, #9C27B0, #7B1FA2);
+  color: #fff;
+}
+
+/* Fallback icon styles */
+.icon-fallback {
+  display: none;
+  font-size: 24px;
+}
+
+/* Show fallback when Font Awesome is unavailable */
+.fa.fa-none + .icon-fallback,
+.fas.fa-none + .icon-fallback,
+.fa + .icon-fallback,
+.fas + .icon-fallback {
+  display: inline-block;
+}
+
+/* Tooltip styles */
+.badge i[title]:hover::after,
+.badge .icon-fallback[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  z-index: 1000;
+}
+
+/* Fallback icon styles */
+.icon-fallback {
+  display: none;
+  font-size: 24px;
+}
+
+/* Show fallback when Font Awesome is unavailable */
+.fa.fa-none + .icon-fallback,
+.fas.fa-none + .icon-fallback,
+.fa + .icon-fallback,
+.fas + .icon-fallback {
+  display: inline-block;
+}
+
+/* Adjust category icon fallback */
+.category-icon .icon-fallback {
+  font-size: 60px;  /* Larger size for category icon */
+}
+
+/* Make sure badges display emojis properly */
+.badge .icon-fallback {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+}
+  </style>
+</head>
+<body>
+  <div id="avatar-selection">
+    <h2>Pick Your Robo-advisor!</h2>
+    <div class="avatar-container">
+      <div class="avatar" data-avatar="1">
+        <img src="robot1.png" alt="Robot 1">
+        <p class="avatar-message">Choose me!</p>
+      </div>
+      <div class="avatar" data-avatar="2">
+        <img src="robot2.png" alt="Robot 2">
+        <p class="avatar-message">Me! Me! Me!</p>
+      </div>
+      <div class="avatar" data-avatar="3">
+        <img src="robot3.png" alt="Robot 3">
+        <p class="avatar-message">I'm better than them! Pick me!</p>
+      </div>
+    </div>
+    <button id="ready-button" style="display: none;">I'm ready!</button>
+  </div>
+
+  <div id="quiz-container" style="display: none;">
+  <div id="avatar-sidebar">
+    <img id="selected-avatar" src="" alt="Selected Robot">
+    <div id="avatar-message" class="speech-bubble" style="margin-top: 20px; width: 200px; background-color: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); position: relative;">
+      <div class="message-text"></div>
+      <div class="message-button-container"></div>
+    </div>
+  </div>
+  <div id="quiz-content">
+
+  <h1>Data Analytics Self-Assessment</h1>
+  <div class="progress-bar">
+    <div class="progress" id="progress"></div>
+  </div>
+  <div id="game">
+    <div class="question" id="question1">
+      <p>1. In your job, data analytics is like:</p>
+      <div class="options">
+        <div class="option" onclick="handleOptionClick(4, 'question2')">
+          (a) Your morning coffee - can't start the day without it.
+          <div class="explanation">You use data analytics daily for critical decision-making</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(3, 'question2')">
+          (b) A trusty Swiss Army knife - handy for various tasks.
+          <div class="explanation">You use data analytics regularly for different aspects of your work</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(2, 'question2')">
+          (c) Your fancy suit - brought out for special occasions.
+          <div class="explanation">You use data analytics occasionally for specific projects</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(1, 'question2')">
+          (d) The gym membership you keep forgetting about.
+          <div class="explanation">You rarely or never use data analytics in your current role</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question 2 -->
+    <div class="question" id="question2" style="display: none;">
+      <p>2. When it comes to messy data, you're:</p>
+      <div class="options">
+        <div class="option" onclick="handleOptionClick(4, 'question3')">
+          (a) The Marie Kondo of datasets - tidying sparks joy!
+          <div class="explanation">You're proficient in using programming tools or macros to automate cleaning tasks</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(3, 'question3')">
+          (b) Ready to dive in, armed with caffeine and a well-worn Google shortcut.
+          <div class="explanation">You can use basic Excel functions or SQL for data cleaning</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(2, 'question3')">
+          (c) Prefer to work with pre-cleaned data, thank you very much.
+          <div class="explanation">You typically use clean datasets in your analysis</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(1, 'question3')">
+          (d) What's data cleaning? Is that like dusting my computer?
+          <div class="explanation">You rarely or never clean data</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question 3 -->
+    <div class="question" id="question3" style="display: none;">
+      <p>3. Your relationship with data visualisation is:</p>
+      <div class="options">
+        <div class="option" onclick="handleOptionClick(4, 'question4')">
+          (a) Like a Picasso - you create interactive visualisations like a masterpiece.
+          <div class="explanation">You can create complex, multi-layered visualisations that reveal deep insights</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(3, 'question4')">
+          (b) More of a paint-by-numbers artist - your charts are clear and effective.
+          <div class="explanation">You can create a variety of standard charts that clearly communicate data</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(2, 'question4')">
+          (c) Stick figure level - You can show the basic trends, but it's not pretty.
+          <div class="explanation">You can show simple visualisations that convey the main point, albeit without much flair</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(1, 'question4')">
+          (d) I prefer words - visualisation isn't your strong suit.
+          <div class="explanation">You rarely or never use data visualisation tools</div>
+        </div>
+      </div>
+    </div>
+    <!-- Question 4 -->
+    <div class="question" id="question4" style="display: none;">
+      <p>4. If data tools were vehicles, you'd be driving:</p>
+      <div class="options">
+        <div class="option" onclick="handleOptionClick(4, 'question5')">
+          (a) A batcar - equipped with high-tech gadgets.
+          <div class="explanation">You're proficient in Python, R, SQL, Tableau, and Power BI, just to name a few</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(3, 'question5')">
+          (b) A reliable hybrid with some smart features.
+          <div class="explanation">You're skilled in Excel, SQL, and basic visualisation tools like Tableau</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(2, 'question5')">
+          (c) A sturdy bicycle - it gets you there, just not as fast.
+          <div class="explanation">You can perform basic analysis and create simple charts with Excel</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(1, 'question5')">
+          (d) Public transport - you rely on others to get you where you need to go.
+          <div class="explanation">You mainly use pre-made reports or rely on others for data analysis</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question 5 -->
+    <div class="question" id="question5" style="display: none;">
+      <p>5. When it comes to finding insights in data, you're:</p>
+      <div class="options">
+        <div class="option" onclick="handleOptionClick(4, 'question6')">
+          (a) A regular Sherlock Holmes - seeing patterns others miss.
+          <div class="explanation">You excel at uncovering deep, non-obvious insights</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(3, 'question6')">
+          (b) More of a Watson, piecing together the clues.
+          <div class="explanation">You can find useful insights with some effort</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(2, 'question6')">
+          (c) The 'Data Dabbler' - master of the obvious trend.
+          <div class="explanation">You can identify surface-level trends and patterns</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(1, 'question6')">
+          (d) You prefer to leave the data mysteries to others.
+          <div class="explanation">You rarely or never analyze data for insights</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question 6 -->
+    <div class="question" id="question6" style="display: none;">
+      <p>6. Your data upskilling wishlist looks like:</p>
+      <div class="options">
+        <div class="option" onclick="handleOptionClick(4, 'result')">
+          (a) Mastering the art of data-driven fortune-telling.
+          <div class="explanation">You aspire to master advanced predictive analytics and machine learning techniques to forecast future trends and outcomes</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(3, 'result')">
+          (b) Becoming fluent in the language of data (Python/R).
+          <div class="explanation">You want to improve your programming skills for data analysis</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(2, 'result')">
+          (c) Crafting data stories that rival bestsellers.
+          <div class="explanation">You want to enhance your data communication and storytelling abilities</div>
+        </div>
+        <div class="option" onclick="handleOptionClick(1, 'result')">
+          (d) Building a solid foundation for your data journey.
+          <div class="explanation">You're eager to develop fundamental data skills</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="result" style="display: none;">
+    <h2>Your Result</h2>
+    <div class="category-icon" id="category-icon"></div>
+    <h3 id="result-category"></h3>
+    <p id="result-description"></p>
+    <div class="skill-meter">
+      <div class="skill-level" id="skill-level"></div>
+    </div>
+    <div id="badges"></div>
+    <div id="recommended-courses"></div>
+  </div>
+
+  <script>
+// Initialize variables
+let selectedAvatar = null;
+let totalScore = 0;
+let currentQuestion = 1;
+const totalQuestions = 6;
+let questionScores = [];
+
+// Avatar messages
+const avatarMessages = {
+  'question1': "Let's start with how you use data in your job!",
+  'question2': "How do you handle messy data?",
+  'question3': "How do you visualize data?",
+  'question4': "What's your data toolset like?",
+  'question5': "How do you find insights in data?",
+  'question6': "What's next on your data journey?"
+};
+
+// Course URLs
+const courseUrls = {
+    "CRDSG10": "https://register.csc.gov.sg/registration?courseId=307900&classNum=5",
+    "CRDMA10": "https://register.csc.gov.sg/registration?courseId=300765&classNum=24",
+    "CRAAD10": "https://register.csc.gov.sg/registration?courseId=300005&classNum=18",
+    "CRDAR10": "https://register.csc.gov.sg/registration?courseId=300022&classNum=10",
+    "CRDPY10": "https://register.csc.gov.sg/registration?courseId=300258&classNum=21",
+    "CRMLT10": "https://register.csc.gov.sg/registration?courseId=307846&classNum=11",
+    "CRDMG10": "https://register.csc.gov.sg/registration?courseId=307882&classNum=8",
+    "CRPAME1": "https://register.csc.gov.sg/registration?courseId=300086&classNum=16",
+    "CRDCL10": "https://register.csc.gov.sg/registration?courseId=300023&classNum=38",
+    "CRSECVL": "https://register.csc.gov.sg/registration?courseId=300105&classNum=105",
+    "CRDST10": "https://register.csc.gov.sg/registration?courseId=307883&classNum=9",
+    "CRPTACS": "https://register.csc.gov.sg/registration?courseId=300199&classNum=15",
+    "CRDSP10": "https://register.csc.gov.sg/registration?courseId=300030&classNum=53",
+    "CRIPP10": "https://register.csc.gov.sg/registration?courseId=300001&classNum=26",
+    "CRBDA10": "https://register.csc.gov.sg/registration?courseId=305326&classNum=25",
+    "CRDCV10": "https://register.csc.gov.sg/registration?courseId=306980&classNum=11",
+    "CRDDAVL": "https://register.csc.gov.sg/registration?courseId=300024&classNum=122"
+  };
+
+function selectAvatar(avatarNumber) {
+  if (selectedAvatar !== null) return;
+
+  selectedAvatar = avatarNumber;
+  
+  document.querySelectorAll('.avatar').forEach(avatar => {
+    if (avatar.dataset.avatar == avatarNumber) {
+      avatar.classList.add('selected');
+      avatar.querySelector('.avatar-message').textContent = "Hurray! Let's find out your profile!";
+      avatar.querySelector('.avatar-message').style.display = 'block';
+    } else {
+      avatar.style.opacity = '0.5';
+      avatar.style.pointerEvents = 'none';
+      avatar.querySelector('.avatar-message').innerHTML = '😢 Aww...';
+      avatar.querySelector('.avatar-message').style.display = 'block';
+    }
+  });
+
+  // Show ready button with animation
+  const readyButton = document.getElementById('ready-button');
+  readyButton.style.display = 'inline-block';
+  readyButton.style.opacity = '0';
+  setTimeout(() => {
+    readyButton.style.opacity = '1';
+  }, 10);
+}
+
+// Add click handlers to avatars
+document.querySelectorAll('.avatar').forEach(avatar => {
+  avatar.addEventListener('click', () => selectAvatar(avatar.dataset.avatar));
+});
+
+function startQuiz() {
+  document.getElementById('question1').style.display = 'block';
+  document.querySelector('.message-text').textContent = avatarMessages['question1'];
+  updateProgressBar();
+  
+  const selectedAvatarImg = document.getElementById('selected-avatar');
+  selectedAvatarImg.src = `robot${selectedAvatar}.png`;
+  selectedAvatarImg.style.display = 'block';
+}
+
+// Ready button click handler
+document.getElementById('ready-button').addEventListener('click', () => {
+  if (selectedAvatar) {
+    const avatarSelection = document.getElementById('avatar-selection');
+    const quizContainer = document.getElementById('quiz-container');
+    
+    avatarSelection.style.opacity = '0';
+    setTimeout(() => {
+      avatarSelection.style.display = 'none';
+      quizContainer.style.display = 'flex';
+      document.getElementById('selected-avatar').src = `robot${selectedAvatar}.png`;
+      startQuiz();
+    }, 300);
+  }
+});
+
+function updateScore(points) {
+  totalScore += points;
+  questionScores.push(points);
+}
+
+function updateProgressBar() {
+  const progress = (currentQuestion / totalQuestions) * 100;
+  document.getElementById('progress').style.width = `${progress}%`;
+}
+
+function nextQuestion(nextId) {
+  document.querySelector('.question:not([style*="display: none"])').style.display = 'none';
+  document.getElementById(nextId).style.display = 'block';
+  document.querySelector('.message-text').textContent = avatarMessages[nextId];
+  currentQuestion++;
+  updateProgressBar();
+}
+
+function handleOptionClick(score, nextQuestionId) {
+  updateScore(score);
+  if (nextQuestionId === 'result') {
+    // Add centered class to quiz container
+    document.getElementById('quiz-container').classList.add('centered-avatar');
+    
+    // Change avatar message and show the "Let's find out" button
+    const messageText = document.querySelector('.message-text');
+    messageText.textContent = "Great job! I have finished my analysis! Are you ready to see your results?";
+    
+    // Create and show the "Let's find out" button
+const finalButton = document.createElement('button');
+finalButton.textContent = "Let's find out!";
+finalButton.style.display = 'block';
+finalButton.style.margin = '20px auto';
+finalButton.style.padding = '10px 20px';
+finalButton.style.fontSize = '18px';
+finalButton.style.backgroundColor = '#2980b9';
+finalButton.style.color = 'white';
+finalButton.style.border = 'none';
+finalButton.style.borderRadius = '5px';
+finalButton.style.cursor = 'pointer';
+
+// Use addEventListener instead of onclick
+finalButton.addEventListener('click', showResult);
+    
+    // Clear any existing buttons and add the new one
+    const buttonContainer = document.querySelector('.message-button-container');
+    buttonContainer.innerHTML = '';
+    buttonContainer.appendChild(finalButton);
+    
+    // Hide the last question
+    document.querySelector('.question:not([style*="display: none"])').style.display = 'none';
+  } else {
+    nextQuestion(nextQuestionId);
+  }
+}
+
+function showResult() {
+
+  const resultDiv = document.getElementById('result');
+  const categoryElement = document.getElementById('result-category');
+  const descriptionElement = document.getElementById('result-description');
+  const coursesElement = document.getElementById('recommended-courses');
+
+   // Update layout and message
+  const quizContainer = document.getElementById('quiz-container');
+  quizContainer.classList.add('centered-avatar', 'results-page');  // Add both classes
+  
+  // Hide the button and update message
+  const buttonContainer = document.querySelector('.message-button-container');
+  if (buttonContainer) {
+    buttonContainer.style.display = 'none';
+  }
+  
+  const messageText = document.querySelector('.message-text');
+  if (messageText) {
+    messageText.textContent = "Here are your results and recommended courses! Click on the course title to register at CSC website!";
+  }
+  
+  // Ensure quiz content is visible
+  document.getElementById('quiz-content').style.display = 'block';
+
+  let category, description, courses;
+
+  // Determine category and initial course recommendations based on total score
+  if (totalScore >= 21 && totalScore <= 24) {
+    category = "Data Expert (21-24 points)";
+    description = "You're at the forefront of data-driven leadership. Like a chess grandmaster, you see patterns and possibilities others miss, thinking several moves ahead. Your challenge is to transform your organization's data culture from the top down. You're positioned to champion data-driven decision making, align data initiatives with organizational goals, and explore cutting-edge technologies. Your next moves? Develop a comprehensive data strategy, break down silos to create a data-fluent organization, and leverage advanced analytics to shape the future. In this rapidly evolving field, keep pushing boundaries and inspiring your teams to view data as a strategic asset.";
+    courses = [
+      "CRDSG10: Building a Successful Data Strategy for your Organisation",
+      "CRDMA10: Data-driven decision making and culture – An overview for Public Service Leaders"
+    ];
+  } else if (totalScore >= 16 && totalScore <= 20) {
+    category = "Data Practitioner (16-20 points)";
+    description = "You're no longer just dipping your toes in the data pool – you're swimming confidently in the deep end! Like a skilled detective, you know how to interrogate data to reveal its secrets. You've got a solid toolkit of analytical skills, but you know there's always another case to crack, another mystery to solve. It's time to add some high-tech gadgets to your investigative arsenal. Whether it's mastering new programming languages or diving into the world of machine learning, you're ready to take your data sleuthing to the next level.";
+    courses = [
+      "CRAAD10: Business intelligence and dashboarding",
+      "CRDAR10: Data analysis with R",
+      "CRDPY10: Data analysis with Python",
+      "CRMLT10: Introduction to Machine learning (code-free)",
+      "CRDMG10: Introduction to Data Management",
+      "CRPAME1: Predictive analytics made easy with Excel"
+    ];
+  } else if (totalScore >= 11 && totalScore <= 15) {
+    category = "Data Enthusiast (11-15 points)";
+    description = "You've got a taste for data, and you're hungry for more! Like a budding chef who's mastered a few recipes, you're now eager to expand your menu of data skills. You can whip up a basic analysis, but you're ready to add some spice to your data dishes. It's time to sharpen your knives (or rather, your analytical skills) and dive into more advanced techniques. You're on the cusp of transforming from a data consumer to a data creator – exciting times ahead!";
+    courses = [
+      "CRDCL10: Cleaning and preparing data for analysis",
+      "CRSECVL: Data visualisation for effective communication",
+      "CRDST10: Data storytelling: make data speak",
+      "CRAAD10: Business intelligence and dashboarding",
+      "CRPTACS: A primer in text analytics - unstructured text and sentiment analysis",
+      "CRDSP10: Starting a data science project",
+      "CRPAME1: Predictive analytics made easy with Excel",
+      "CRIPP10: Introduction to Python programming",
+      "CRDMG10: Introduction to data management"
+    ];
+  } else {
+    category = "Data Novice (6-10 points)";
+    description = "You're at the starting line of your data adventure! Like a curious explorer setting foot on a new continent, you're beginning to discover the vast landscape of data analytics. You might feel a bit overwhelmed by all the jargon and tools out there, but don't worry – everyone starts somewhere. Your mission now is to build a solid foundation, learning the basic concepts and tools that will serve as your trusty map and compass in the world of data. Get ready to unlock the secrets hidden in spreadsheets and charts!";
+    courses = [
+      "CRBDA10: Basic Data analytics for Support Officers",
+      "CRDCV10: Data cleaning and visualisation for Support Officers",
+      "CRDDAVL: Data analytics: Basic principles and Applications"
+    ];
+  }
+
+  // Show the result div and populate content
+  resultDiv.style.display = 'block';
+
+  // Additional recommendations based on question 6
+  if (questionScores[5] === 4) {
+    courses.push("CRPAME1: Predictive analytics made easy with Excel");
+  } else if (questionScores[5] === 3) {
+    courses.push("CRIPP10: Introduction to Python Programming", "CRDAR10: Data analysis with R", "CRDPY10: Data analysis with Python");
+  } else if (questionScores[5] === 2) {
+    courses.push("CRSECVL: Data visualisation for effective communication", "CRDST10: Data storytelling: make data speak");
+  } else if (questionScores[5] === 1) {
+    courses.push("CRDDAVL: Data analytics: Basic principles and Applications");
+  }
+  // Categorize courses
+  let categorizedCourses = {
+    "Data Cleaning": new Set(),
+    "Fundamental": new Set(),
+    "Management": new Set(),
+    "Visualisation": new Set(),
+    "Advanced Analytics": new Set()
+  };
+
+  // Comprehensive list of all courses with their categories
+  const allCourses = {
+    "Data Cleaning": [
+      "CRDCL10: Cleaning and preparing data for analysis",
+      "CRIPP10: Introduction to Python Programming",
+      "CRDPY10: Data analysis with Python",
+      "CRDAR10: Data analysis with R",
+      "CRDCV10: Data cleaning and visualisation for Support Officers"
+    ],
+    "Fundamental": [
+      "CRDDAVL: Data analytics: Basic principles and Applications",
+      "CRBDA10: Basic Data analytics for Support Officers"
+    ],
+    "Management": [
+      "CRDSP10: Starting a data science project",
+      "CRDMG10: Introduction to Data Management",
+      "CRDSG10: Building a Successful Data Strategy for your Organisation",
+      "CRDMA10: Data-driven decision making and culture – An overview for Public Service Leaders"
+    ],
+    "Visualisation": [
+      "CRSECVL: Data visualisation for effective communication",
+      "CRDST10: Data storytelling: make data speak",
+      "CRAAD10: Business intelligence and dashboarding"
+    ],
+    "Advanced Analytics": [
+      "CRPTACS: A primer in text analytics - unstructured text and sentiment analysis",
+      "CRPAME1: Predictive analytics made easy with Excel",
+      "CRMLT10: Introduction to Machine learning (code-free)"
+    ]
+  };
+
+  // Categorize recommended courses
+  courses.forEach(course => {
+    for (let category in allCourses) {
+      if (allCourses[category].includes(course)) {
+        categorizedCourses[category].add(course);
+      }
+    }
+  });
+
+  categoryElement.textContent = category;
+  descriptionElement.textContent = description;
+
+  // Generate HTML table for categorized courses
+let coursesHTML = '<table class="course-table"><thead><tr><th>Skill Set</th><th>Recommended Programmes</th></tr></thead><tbody>';
+for (let skillSet in categorizedCourses) {
+  if (categorizedCourses[skillSet].size > 0) {
+    coursesHTML += `<tr><td>${skillSet}</td><td><ul>`;
+    categorizedCourses[skillSet].forEach(course => {
+      const courseCode = course.split(":")[0];
+      const courseUrl = courseUrls[courseCode] || '#';
+      coursesHTML += `<li><a href="${courseUrl}" target="_blank">${course}</a></li>`;
+    });
+    coursesHTML += '</ul></td></tr>';
+  }
+}
+coursesHTML += '</tbody></table>';
+
+  coursesElement.innerHTML = coursesHTML;
+
+  // Update category icon with fallback
+  const categoryIcon = document.getElementById('category-icon');
+  if (totalScore >= 21) {
+    categoryIcon.innerHTML = `
+      <i class="fas fa-crown fa-none" aria-hidden="true"></i>
+      <span class="icon-fallback" title="Data Expert">👑</span>
+    `;
+  } else if (totalScore >= 16) {
+    categoryIcon.innerHTML = `
+      <i class="fas fa-chart-line fa-none" aria-hidden="true"></i>
+      <span class="icon-fallback" title="Data Practitioner">📈</span>
+    `;
+  } else if (totalScore >= 11) {
+    categoryIcon.innerHTML = `
+      <i class="fas fa-lightbulb fa-none" aria-hidden="true"></i>
+      <span class="icon-fallback" title="Data Enthusiast">💡</span>
+    `;
+  } else {
+    categoryIcon.innerHTML = `
+      <i class="fas fa-seedling fa-none" aria-hidden="true"></i>
+      <span class="icon-fallback" title="Data Novice">🌱</span>
+    `;
+  }
+   // Update badges based on category
+  const badgesDiv = document.getElementById('badges');
+  let badgesHTML = '';
+  
+  if (totalScore >= 21) {
+    // Data Expert badges
+    badgesHTML = `
+      <div class="badge expert">
+        <i class="fas fa-crown fa-none" aria-hidden="true" title="Data Expert"></i>
+        <span class="icon-fallback" title="Data Expert">👑</span>
+      </div>
+      <div class="badge expert">
+        <i class="fas fa-brain fa-none" aria-hidden="true" title="Strategic Thinker"></i>
+        <span class="icon-fallback" title="Strategic Thinker">🧠</span>
+      </div>
+      <div class="badge expert">
+        <i class="fas fa-chess-queen fa-none" aria-hidden="true" title="Data Leader"></i>
+        <span class="icon-fallback" title="Data Leader">♕</span>
+      </div>
+    `;
+  } else if (totalScore >= 16) {
+    // Data Practitioner badges
+    badgesHTML = `
+      <div class="badge practitioner">
+        <i class="fas fa-chart-line fa-none" aria-hidden="true" title="Data Analyst"></i>
+        <span class="icon-fallback" title="Data Analyst">📈</span>
+      </div>
+      <div class="badge practitioner">
+        <i class="fas fa-laptop-code fa-none" aria-hidden="true" title="Code Proficient"></i>
+        <span class="icon-fallback" title="Code Proficient">💻</span>
+      </div>
+      <div class="badge practitioner">
+        <i class="fas fa-database fa-none" aria-hidden="true" title="Data Handler"></i>
+        <span class="icon-fallback" title="Data Handler">🗄️</span>
+      </div>
+    `;
+  } else if (totalScore >= 11) {
+    // Data Enthusiast badges
+    badgesHTML = `
+      <div class="badge enthusiast">
+        <i class="fas fa-lightbulb fa-none" aria-hidden="true" title="Data Enthusiast"></i>
+        <span class="icon-fallback" title="Data Enthusiast">💡</span>
+      </div>
+      <div class="badge enthusiast">
+        <i class="fas fa-chart-bar fa-none" aria-hidden="true" title="Visualization Beginner"></i>
+        <span class="icon-fallback" title="Visualization Beginner">📊</span>
+      </div>
+      <div class="badge enthusiast">
+        <i class="fas fa-tasks fa-none" aria-hidden="true" title="Analysis Learner"></i>
+        <span class="icon-fallback" title="Analysis Learner">📝</span>
+      </div>
+    `;
+  } else {
+    // Data Novice badges
+    badgesHTML = `
+      <div class="badge novice">
+        <i class="fas fa-seedling fa-none" aria-hidden="true" title="Data Novice"></i>
+        <span class="icon-fallback" title="Data Novice">🌱</span>
+      </div>
+      <div class="badge novice">
+        <i class="fas fa-book-open fa-none" aria-hidden="true" title="Eager Learner"></i>
+        <span class="icon-fallback" title="Eager Learner">📚</span>
+      </div>
+      <div class="badge novice">
+        <i class="fas fa-graduation-cap fa-none" aria-hidden="true" title="Knowledge Seeker"></i>
+        <span class="icon-fallback" title="Knowledge Seeker">🎓</span>
+      </div>
+    `;
+ }
+  badgesDiv.innerHTML = badgesHTML;
+  
+// Update skill meter
+  const skillLevel = document.getElementById('skill-level');
+  skillLevel.style.width = `${(totalScore / 24) * 100}%`;
+
+
+// Create avatar and speech bubble
+  const avatarContainer = document.createElement('div');
+  avatarContainer.style.display = 'flex';
+  avatarContainer.style.alignItems = 'center';
+  avatarContainer.style.marginBottom = '20px';
+
+  const avatarImg = document.createElement('img');
+  avatarImg.src = `robot${selectedAvatar}.png`;
+  avatarImg.alt = `Selected Robot ${selectedAvatar}`;
+  avatarImg.style.width = '100px';
+  avatarImg.style.height = '100px';
+  avatarImg.style.borderRadius = '50%';
+  avatarImg.style.marginRight = '20px';
+
+  const speechBubble = document.createElement('div');
+  speechBubble.className = 'speech-bubble';
+
+ // Personalized encouraging message
+  let encouragingMessage = "Click on a course you're interested in to register at CSC!";
+  if (category.includes("Data Novice")) {
+    encouragingMessage = "Great start! Everyone begins somewhere. " + encouragingMessage;
+  } else if (category.includes("Data Enthusiast")) {
+    encouragingMessage = "You're making great progress! Keep up the momentum. " + encouragingMessage;
+  } else if (category.includes("Data Practitioner")) {
+    encouragingMessage = "Impressive skills! You're well on your way to becoming a data expert. " + encouragingMessage;
+  } else if (category.includes("Data Expert")) {
+    encouragingMessage = "Outstanding! You're at the top of your game. How about sharing your knowledge? " + encouragingMessage;
+  }
+
+ // Update the side avatar message
+  const avatarMessage = document.getElementById('avatar-message');
+  avatarMessage.innerHTML = `<div class="message-text">${encouragingMessage}</div>`;
+  
+  // Adjust the avatar sidebar styles
+  const avatarSidebar = document.getElementById('avatar-sidebar');
+  avatarSidebar.style.position = 'static';
+  avatarSidebar.style.width = 'auto';
+  avatarSidebar.style.marginBottom = '20px';
+
+  // Adjust the selected avatar styles
+  const selectedAvatar = document.getElementById('selected-avatar');
+  selectedAvatar.style.position = 'static';
+  selectedAvatar.style.left = 'auto';
+  selectedAvatar.style.top = 'auto';
+  selectedAvatar.style.transform = 'none';
+
+  // Move the avatar sidebar to just before the course recommendations
+  coursesElement.parentNode.insertBefore(avatarSidebar, coursesElement);
+
+  // Hide the progress bar
+  document.querySelector('.progress-bar').style.display = 'none';
+
+  // Hide the questions
+  document.querySelectorAll('.question').forEach(question => {
+    question.style.display = 'none';
+  });
+
+  // Remove any existing avatar from the result div
+  const existingAvatarContainer = resultDiv.querySelector('div');
+  if (existingAvatarContainer && existingAvatarContainer.contains(resultDiv.querySelector('img'))) {
+    existingAvatarContainer.remove();
+  }
+
+  // Ensure the quiz-container is visible
+  document.getElementById('quiz-container').style.display = 'flex';
+
+  // Trigger confetti
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 }
+  });
+}
+  </script>
+</body>
+</html>
